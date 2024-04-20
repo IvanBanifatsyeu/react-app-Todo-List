@@ -1,5 +1,12 @@
-
-
-.button__add {
-    
+.toDoList {
+    font-family: "Dancing Script" ;
 }
+
+.text {
+    font-family: 'Chilanka';
+    font-size: 26px;
+  }
+
+  .buttonDel {
+   font-family: 'Lugrasimo';
+  }
