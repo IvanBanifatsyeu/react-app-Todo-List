@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import WebFont from "webfontloader";
 
 function App() {
+
 	useEffect(() => {
 		WebFont.load({
 			google: {

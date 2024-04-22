@@ -1,18 +1,13 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
 import styles from "./ToDoList.module.css";
 
 const ToDoList = () => {
-	const [tasks, setTasks] = useState(["zero", 11, 22, 33, 44]);
-	const [newTask, setNewTask] = useState("");
-
-	function handleInputChange(e) {
-		setNewTask(e.target.value);
-	}
+	const [tasks, setTasks] = useState([{ task: "wash dishes", checked: false }]);
+	const [newTask, setNewTask] = useState({ task: "", checked: false });
 
 	function addTask() {
 		setTasks([...tasks, newTask]);
-		setNewTask("");
+		setNewTask({ task: "", checked: false });
 	}
 
 	function deleteTask(index) {
@@ -20,30 +15,38 @@ const ToDoList = () => {
 	}
 
 	function movTaskUp(index) {
-		tasks.splice(index - 1, 2, tasks[index], tasks[index - 1]);
-		setTasks([...tasks]);
+		if (index !== 0) {
+			tasks.splice(index - 1, 2, tasks[index], tasks[index - 1]);
+			setTasks([...tasks]);
+		}
 	}
 
 	function movTaskDown(index) {
-		tasks.splice(index, 2, tasks[index + 1], tasks[index]);
-		setTasks([...tasks]);
+		if (index !== tasks.length - 1) {
+			tasks.splice(index, 2, tasks[index + 1], tasks[index]);
+			setTasks([...tasks]);
+		}
 	}
 
-	function handleCheckbox(e) {
-		e.target.checked
-			? (e.target.nextSibling.style.textDecoration = "line-through")
-			: (e.target.nextSibling.style.textDecoration = "none");
+	function handleCheckbox(index) {
+		setTasks(() => {
+			tasks[index].checked = !tasks[index].checked;
+			return [...tasks];
+		});
+	}
+
+	function handleInputChange(e) {
+		setNewTask({ task: e.target.value, checked: false });
 	}
 
 	return (
 		<div className={styles.toDoList}>
-			{console.log(`%cre-rend` , 'color: yellow; background: grey; font-size: x-large')}
 			<h1>To-Do-List</h1>
 			<div>
 				<input
 					type="text"
 					placeholder="enter a task ..."
-					value={newTask}
+					value={newTask.task}
 					onChange={handleInputChange}
 				/>
 				<button className={styles.buttonAdd} onClick={addTask}>
@@ -54,12 +57,21 @@ const ToDoList = () => {
 				{tasks.map((task, index) => (
 					<li key={index}>
 						<input
+							className={task.checked ? styles.checked : ""}
 							type="checkbox"
 							id="done"
 							name="completed task"
-							onClick={handleCheckbox}
+							onClick={() => handleCheckbox(index)}
 						/>
-						<span className={styles.text}>{task}</span>
+						<span
+							style={{
+								textDecoration: task.checked ? "line-through" : "none",
+								textDecorationColor: task.checked ? "#ff1100" : "none",
+							}}
+							className={styles.text}
+						>
+							{task.task}
+						</span>
 						<button
 							className={styles.buttonDel}
 							onClick={() => deleteTask(index)}
